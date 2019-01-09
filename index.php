@@ -3,7 +3,7 @@ $title = "Login";
 
 include_once "layouts/header.php";
 
-if(!isset($_SESSION['username'])) {
+if(isset($_SESSION['username'])) {
     header("location:home.php");
 }
 
@@ -18,7 +18,7 @@ if(!isset($_SESSION['username'])) {
         <div class="card-body login-card-body box-custom">
             <p class="login-box-msg">Sign in to start chats</p>
             <?= msgHandling() ?>
-            <form action="proses/login.php" method="post">
+            <form action="process/authentication.php?process=login" method="post">
                 <div class="form-group has-feedback">
                     <input type="text" name="username" class="form-control" placeholder="Username">
                 </div>
