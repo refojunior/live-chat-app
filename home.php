@@ -51,7 +51,7 @@ if(!isset($_SESSION['username'])) {
                 <div class="direct-chat-contacts">
                   <ul class="contacts-list">
                   <?php 
-                    $user = $db->query("SELECT * FROM users");
+                    $user = $db->query("SELECT * FROM users WHERE username != '".$_SESSION['username'] . "'");
                     foreach($user as $contact) {
                     ?>
                     <li>
@@ -129,6 +129,8 @@ $(document).ready(function(){
     } else {
       alert('Write a message first!');
     }
+
+    $('#message').val('');
     
   });
 

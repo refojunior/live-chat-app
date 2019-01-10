@@ -6,17 +6,15 @@ include "../connection.php";
 $time = date('Y-m-d H:i:s');
 $text = $_POST['message'];
 $sender = $_SESSION['username'];
+$receiver = $_POST['receives'];
 
-$query = "INSERT INTO chats VALUES ('', '$time', '$text', '$sender', '1')";
+//penerimanya
+$penerima = $db->query("SELECT * FROM users WHERE name = '$receiver'")->fetch();
+
+$query = "INSERT INTO chats VALUES ('', '$time', '$text', '$sender', '$penerima[username]',  '1')";
 
 $db->query($query);
-//PENERIMA
-$receives = $_POST['receives'];
-$penerima = $db->query("SELECT * FROM users WHERE name = '$receives'")->fetch();
-$last_id = $db->query("SELECT count(id) as pesan_id from chats ")->fetch();
 
-//insert penerima
-$db->query("INSERT INTO receives VALUES (' ". $last_id['pesan_id'] ." ', '".$penerima['username']."' )");
 
 
 
