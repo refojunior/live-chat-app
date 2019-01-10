@@ -39,23 +39,28 @@ if(!isset($_SESSION['username'])) {
                 </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-body">
+              <div class="card-body" id="header-chat">
                 <!-- Conversations are loaded here -->
-                <div class="direct-chat-messages">
+                <div class="direct-chat-messages" id="content-chat">
                   <!--CHAT ADA DISINI -->
                 </div>
                 <!--/.direct-chat-messages-->
 
                 <!-- Contacts are loaded here -->
+                
                 <div class="direct-chat-contacts">
                   <ul class="contacts-list">
+                  <?php 
+                    $user = $db->query("SELECT * FROM users");
+                    foreach($user as $contact) {
+                    ?>
                     <li>
-                      <a href="#" onclick="return selectedContact('Count Dracula')">
+                      <a href="#" name="<?= $contact['name'] ?>" onclick='return selectedContact(this)'>
                         <img class="contacts-list-img" src="picture/user1-128x128.jpg">
 
                         <div class="contacts-list-info">
                           <span class="contacts-list-name">
-                            Count Dracula
+                            <?= $contact['name'] ?>
                             <small class="contacts-list-date float-right">2/28/2015</small>
                           </span>
                           <span class="contacts-list-msg">How have you been? I was...</span>
@@ -64,22 +69,7 @@ if(!isset($_SESSION['username'])) {
                       </a>
                     </li>
                     <!-- End Contact Item -->
-                    <li>
-                      <a href="#" onclick="return selectedContact('Sarah Doe')">
-                        <img class="contacts-list-img" src="picture/user1-128x128.jpg">
-
-                        <div class="contacts-list-info">
-                          <span class="contacts-list-name">
-                            Sarah Doe
-                            <small class="contacts-list-date float-right">2/23/2015</small>
-                          </span>
-                          <span class="contacts-list-msg">I will be waiting for...</span>
-                        </div>
-                        <!-- /.contacts-list-info -->
-                      </a>
-                    </li>
-                    <!-- End Contact Item -->
-                   
+                    <?php } ?>
                    
                   </ul>
                   <!-- /.contacts-list -->
@@ -108,18 +98,21 @@ if(!isset($_SESSION['username'])) {
 
 <script>
 function showContact(){
+  $('.card-title').html('Direct Chat');
   $('.card, .direct-chat').addClass('direct-chat-contacts-open');
 }
 
+
 function selectedContact(param){
-  $('.card-title').html(param);
+  name = $('.card-title').html(param.name);
   $('.card, .direct-chat').removeClass('direct-chat-contacts-open');
   $.post("process/chat.php", {
-    user: param,
+    user: param.name,
   },
   function(data, status){
     $('.direct-chat-messages').html(data);
   });
+  
 }
 
 $(document).ready(function(){
@@ -127,7 +120,8 @@ $(document).ready(function(){
     if($('#message').val() != ''){
       $.post("process/send.php", 
       {
-        message: $("#message").val()
+        message: $("#message").val(),
+        receives: $('.card-title').html()
       },
       function(data, status){
         $(".direct-chat-messages").append(data);
